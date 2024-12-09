@@ -10,7 +10,9 @@ repositories {
 }
 
 dependencies {
+    implementation("io.arrow-kt:arrow-core:1.2.4")
     testImplementation(kotlin("test"))
+    testImplementation("org.assertj:assertj-core:3.19.0")
 }
 
 tasks.test {
