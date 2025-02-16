@@ -1,3 +1,4 @@
+import arrow.core.andThen
 import arrow.core.compose
 import kotlin.math.exp
 import kotlin.math.sin
@@ -32,6 +33,16 @@ object Composing {
      * ## Composing regular functions using point-free style
      *
      * Point-free style is also referred to as _tacit programming_.
+     *
+     * Note that composition is applied in right-to-left order, as in mathematics and Haskell.
      */
     val sinThenExpPfs: (Double) -> Double = ::exp compose ::sin
+
+    /**
+     * ## Composing regular functions using point-free style and chaining
+     *
+     * Note that composition is applied in left-to-right order, similar to syntactic chains.
+     */
+    val sinThenExpPfsChain = ::sin andThen ::exp
+
 }

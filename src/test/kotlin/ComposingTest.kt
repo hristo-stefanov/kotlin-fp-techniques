@@ -1,6 +1,7 @@
 import Composing.sinThenExp
 import Composing.sinThenExpLambda
 import Composing.sinThenExpPfs
+import Composing.sinThenExpPfsChain
 import org.assertj.core.api.Assertions.assertThat
 import kotlin.math.E
 import kotlin.math.PI
@@ -24,6 +25,13 @@ class ComposingTest {
     @Test
     fun textSinThenExpPfs() {
         val result = sinThenExpPfs(PI / 2)
+
+        assertThat(result).isEqualTo(E)
+    }
+
+    @Test
+    fun testSinThenExpPfsChain() {
+        val result = sinThenExpPfsChain(PI / 2)
 
         assertThat(result).isEqualTo(E)
     }
