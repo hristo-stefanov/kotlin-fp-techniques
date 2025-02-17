@@ -1,3 +1,4 @@
+import Composing.powTwicePfs
 import Composing.sinThenExp
 import Composing.sinThenExpLambda
 import Composing.sinThenExpPfs
@@ -34,5 +35,14 @@ class ComposingTest {
         val result = sinThenExpPfsChain(PI / 2)
 
         assertThat(result).isEqualTo(E)
+    }
+
+    @Test
+    fun testPowTwicePfs() {
+        val result = powTwicePfs(2.0)(3.0)
+
+        // The actual policy applied twice is f(x) = 2.0^x
+        // Thus, result = 2^(2^3) = 2^8 = 256
+        assertThat(result).isEqualTo(256.0)
     }
 }
