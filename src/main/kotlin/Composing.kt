@@ -1,6 +1,7 @@
 import arrow.core.andThen
 import arrow.core.compose
 import arrow.core.curried
+import java.lang.Math.PI
 import java.lang.Math.pow
 import kotlin.math.exp
 import kotlin.math.sin
@@ -60,4 +61,18 @@ object Composing {
      * Note the order of parameters - it follows the data-last style to allow lining-up when used with curring.
      */
     private fun applyTwice(policy: (Double) -> Double, x: Double): Double = policy(policy(x))
+
+    /**
+     * ## Debug composition with tracing
+     */
+    val sinThenExpTraced = trace<Double>("exp result") compose ::exp compose trace("sin result") compose ::sin
+
+    private fun <T> trace(tag: String) = fun(value: T): T {
+        println("[$tag] $value")
+        return value
+    }
+}
+
+fun main() {
+    Composing.sinThenExpTraced(PI / 2)
 }
