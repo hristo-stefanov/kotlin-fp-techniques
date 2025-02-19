@@ -52,7 +52,7 @@ object Composing {
     val sinThenExpPfsChain = ::sin andThen ::exp
 
     /**
-     * ## Curry to compose using point-free style
+     * ## Using currying to compose in point-free style
      */
     val powTwicePfs = ::applyTwice.curried() compose ::pow.curried()
 
