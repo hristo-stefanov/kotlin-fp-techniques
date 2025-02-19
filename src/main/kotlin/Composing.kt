@@ -35,7 +35,7 @@ object Composing {
     val sinThenExpLambda = { x: Double -> exp(sin(x)) }
 
     /**
-     * ## Composing regular functions using point-free style
+     * ## Composing regular unary functions using point-free style
      *
      * Point-free style is also referred to as _tacit programming_.
      *
@@ -44,7 +44,7 @@ object Composing {
     val sinThenExpPfs = ::exp compose ::sin
 
     /**
-     * ## Composing regular functions using point-free style and chaining
+     * ## Composing regular unary functions using point-free style and chaining
      *
      * Note that composition is applied in left-to-right order, similar to syntactic chains.
      */
@@ -52,14 +52,11 @@ object Composing {
 
     /**
      * ## Using currying to compose non-unary functions in point-free style
+     *
+     * Note the order of parameters of [applyTwice] - it follows the data-last style to allow lining-up when used with curring.
      */
     val powTwicePfs = ::applyTwice.curried() compose ::pow.curried()
 
-    /**
-     * ## Applies a policy twice
-     *
-     * Note the order of parameters - it follows the data-last style to allow lining-up when used with curring.
-     */
     private fun applyTwice(policy: (Double) -> Double, x: Double): Double = policy(policy(x))
 
     /**
