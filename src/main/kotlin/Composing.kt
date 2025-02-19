@@ -1,10 +1,11 @@
+
 import arrow.core.andThen
 import arrow.core.compose
 import arrow.core.curried
 import java.lang.Math.PI
+import java.lang.Math.exp
 import java.lang.Math.pow
-import kotlin.math.exp
-import kotlin.math.sin
+import java.lang.Math.sin
 
 /**
  * # Composing functions
@@ -63,7 +64,7 @@ object Composing {
     private fun applyTwice(policy: (Double) -> Double, x: Double): Double = policy(policy(x))
 
     /**
-     * ## Debug composition with tracing
+     * ## Debugging composition with tracing
      */
     val sinThenExpTraced = trace<Double>("exp result") compose ::exp compose trace("sin result") compose ::sin
 
@@ -71,7 +72,18 @@ object Composing {
         println("[$tag] $value")
         return value
     }
+
+    /**
+     * ## Large scale composition
+     *
+     * @throws ClassCastException if the consumed and produced types of [functions] don't line up
+     */
+    @Suppress("UNCHECKED_CAST")
+    fun chain(vararg functions: Function1<*, *>) = { argOfFirstFunction: Any? ->
+        functions.fold(argOfFirstFunction) { acc, f -> (f as (Any?) -> Any?)(acc) }
+    }
 }
+
 
 fun main() {
     Composing.sinThenExpTraced(PI / 2)
