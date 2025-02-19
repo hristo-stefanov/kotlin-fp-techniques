@@ -1,9 +1,12 @@
+import Composing.addThenMultiplySafely
 import Composing.chain
 import Composing.powTwicePfs
 import Composing.sinThenExp
 import Composing.sinThenExpLambda
 import Composing.sinThenExpPfs
 import Composing.sinThenExpPfsChain
+import Composing.sqrtThenLog10Num
+import arrow.core.Some
 import org.assertj.core.api.Assertions.assertThat
 import java.lang.Math.E
 import java.lang.Math.PI
@@ -57,5 +60,19 @@ class ComposingTest {
         val result = chain(::sin, ::exp, ::toShortSciFormat)(PI / 2)
 
         assertThat(result).isEqualTo("2.7183e+00")
+    }
+
+    @Test
+    fun testSqrtThenLog10Num() {
+        val result = sqrtThenLog10Num(100.0)
+
+        assertThat(result).isEqualTo(Some(1.0))
+    }
+
+    @Test
+    fun testAddThenMultiplySafely() {
+        val result = addThenMultiplySafely(1, 2, 3)
+
+        assertThat(result).isEqualTo(Some(9))
     }
 }

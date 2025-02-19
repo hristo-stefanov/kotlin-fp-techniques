@@ -1,11 +1,10 @@
-
+import arrow.core.None
+import arrow.core.Option
+import arrow.core.Some
 import arrow.core.andThen
 import arrow.core.compose
 import arrow.core.curried
-import java.lang.Math.PI
-import java.lang.Math.exp
-import java.lang.Math.pow
-import java.lang.Math.sin
+import java.lang.Math.*
 
 /**
  * # Composing functions
@@ -74,7 +73,7 @@ object Composing {
     }
 
     /**
-     * ## Large scale composition
+     * ## Large scale composition of regular functions
      *
      * @throws ClassCastException if the consumed and produced types of [functions] don't line up
      */
@@ -82,8 +81,23 @@ object Composing {
     fun chain(vararg functions: Function1<*, *>) = { argOfFirstFunction: Any? ->
         functions.fold(argOfFirstFunction) { acc, f -> (f as (Any?) -> Any?)(acc) }
     }
-}
 
+    /**
+     * ## Composing monadic unary functions
+     */
+    fun sqrtThenLog10Num(x: Double): Option<Double> = sqrtNum(x).flatMap(::log10Num)
+
+    private fun sqrtNum(x: Double): Option<Double> = sqrt(x).let { if (it.isNaN()) None else Some(it) }
+    private fun log10Num(x: Double): Option<Double> = log10(x).let { if (it.isNaN()) None else Some(it) }
+
+    /**
+     * ## Composing monadic binary functions
+     */
+    fun addThenMultiplySafely(x: Int, y: Int, z: Int) = addSafely(x, y).flatMap { multiplySafely(it, z) }
+
+    private fun addSafely(x: Int, y: Int): Option<Int> = Option.catch { addExact(x, y) }
+    private fun multiplySafely(x: Int, y: Int): Option<Int> = Option.catch { multiplyExact(x, y) }
+}
 
 fun main() {
     Composing.sinThenExpTraced(PI / 2)
