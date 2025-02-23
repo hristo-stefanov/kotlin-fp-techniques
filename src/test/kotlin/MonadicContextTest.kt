@@ -1,3 +1,4 @@
+
 import MonadicContext.expOption
 import MonadicContext.fmaOption
 import MonadicContext.fmaOptionArrow
@@ -8,8 +9,8 @@ import MonadicContext.rightValue
 import MonadicContext.some
 import MonadicContext.someValue
 import arrow.core.Some
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.test.runTest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -68,6 +69,6 @@ class MonadicContextTest {
     fun testPowFlow() = runTest {
         val result = powFlow(flowOf(2.0), flowOf(3.0))
 
-        assertThat(result.first()).isEqualTo(8.0)
+        assertThat(result.single()).isEqualTo(8.0)
     }
 }
