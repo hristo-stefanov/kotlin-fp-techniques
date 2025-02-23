@@ -6,9 +6,9 @@ import arrow.core.raise.option
 import arrow.core.right
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.zip
+import java.lang.Math.exp
 import java.lang.Math.fma
 import java.lang.Math.pow
-import kotlin.math.exp
 
 /**
  * # Monadic context
@@ -19,7 +19,7 @@ import kotlin.math.exp
  * implementation can have different names.
  *
  * A monad does not provide a generic "unwrap" operation, as it is designed for composing computations.
- * However, certain monad implementations offer functions for controlled extraction of embedded values.
+ * However, certain monad implementations offer functions for controlled _extraction_ of embedded values.
  *
  * _Lifting_ is a technique for transforming a regular function to operate within a monadic context.
  *
@@ -37,12 +37,12 @@ import kotlin.math.exp
 object MonadicContext {
 
     /**
-     * ## Wrapping using an extension function
+     * ## Wrapping with an extension function
      */
     val right: Either<Throwable, String> = "right".right()
 
     /**
-     *  ## Wrapping using a class constructor
+     *  ## Wrapping with a class constructor
      */
     val some: Option<String> = Some("some")
 
@@ -59,7 +59,7 @@ object MonadicContext {
     /**
      * ## Lifting a unary function with `map`
      */
-    val expOption = Some(1.0).map(::exp)
+    fun expOption(xOption: Option<Double>) = xOption.map(::exp)
 
     /**
      * ## Lifting a binary function with `map` and `flatMap`
@@ -90,7 +90,7 @@ object MonadicContext {
      *
      * Note that zip implementations can have limited arity as low as 2.
      */
-    fun powflow(aFlow: Flow<Double>, bFlow: Flow<Double>): Flow<Double> {
+    fun powFlow(aFlow: Flow<Double>, bFlow: Flow<Double>): Flow<Double> {
         return aFlow.zip(bFlow) { a, b -> pow(a, b) }
     }
 
