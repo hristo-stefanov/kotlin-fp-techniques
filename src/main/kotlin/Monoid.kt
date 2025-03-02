@@ -51,7 +51,7 @@ object Monoid {
     }
 
     /**
-     * ## Combining two monoid operations into a product monoid
+     * ## Assembling two monoid operations into a product monoid
      *
      * The identity of the product monoid is a [Pair] of the identities of the two monoids.
      */
