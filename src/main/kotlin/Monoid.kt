@@ -4,11 +4,15 @@ import arrow.core.fold
 /**
  * # Monoid
  *
- * _Nesting_ monoid associative operations is useful for folding hierarchical structures
+ * Monoids can be composed and transformed in various ways:
+ *
+ * _Nesting_ monoids is useful for folding hierarchical structures
  * such as multimaps and nested maps.
  *
  * Since a monoid's associative operation is not necessarily commutative,
  * preserving the order of parameters when delegating to a nested operation is essential.
+ *
+ * _Product_ monoids are useful for fusing traversals.
  *
  * ## References
  *
@@ -44,5 +48,29 @@ object Monoid {
             val value = this[k]?.let { valueCombine(it, v) } ?: v
             acc + (k to value)
         }
+    }
+
+    /**
+     * ## Combining two monoid operations into a product monoid
+     *
+     * The identity of the product monoid is a [Pair] of the identities of the two monoids.
+     */
+    fun <L, R> productCombine(leftCombine: (L, L) -> L, rightCombine: (R, R) -> R) =
+        fun(pair1: Pair<L, R>, pair2: Pair<L, R>) =
+            leftCombine(pair1.first, pair2.first) to rightCombine(pair1.second, pair2.second)
+
+    /**
+     * ## Single-pass mean calculation
+     */
+    fun mean(list: List<Int>): Double {
+        // The product monoid operation and identity
+        val plusPlusProductCombine = productCombine(Int::plus, Int::plus)
+        val identity = Pair(0, 0)
+
+        val sumAndCount = list.fold(identity) { acc: Pair<Int, Int>, i: Int ->
+            plusPlusProductCombine(acc, Pair(i, 1))
+        }
+
+        return sumAndCount.first.toDouble() / sumAndCount.second
     }
 }

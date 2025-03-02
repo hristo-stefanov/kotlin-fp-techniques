@@ -1,5 +1,7 @@
 import Monoid.combineMergeMultimap
 import Monoid.combineMergeNestedMaps
+import Monoid.mean
+import Monoid.productCombine
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -35,5 +37,25 @@ class MonoidTest {
         assertThat(result).isEqualTo(
             mapOf("category" to mapOf(1 to "Alpha", 2 to "Beta"))
         )
+    }
+
+    @Test
+    fun testProductCombine() {
+        val plusMinusProductCombine: (Pair<String, Int>, Pair<String, Int>) -> Pair<String, Int> =
+            productCombine(String::plus, Int::minus)
+
+        val result = plusMinusProductCombine(Pair("Left", 4), Pair("Right", 1))
+
+        assertThat(result).isEqualTo(Pair("LeftRight", 3))
+
+    }
+
+    @Test
+    fun testMean() {
+        val list = listOf(1, 2, 3, 4, 5)
+
+        val result = mean(list)
+
+        assertThat(result).isEqualTo(3.0)
     }
 }
