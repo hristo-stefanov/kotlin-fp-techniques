@@ -101,4 +101,27 @@ object Monoid {
             ?: rightResult
     }
 
+    /**
+     * ## Eager reduce
+     *
+     * Since this algorithm combines pairs of [T], it's not suited to handling initial value
+     * and accumulation into a different structure like a traditional left/right fold.
+     *
+     * Instead of passing the identity element (nil) to handle the base case of empty list,
+     * the function returns `null` allowing the caller to fall back to nil or some initial value.
+     */
+    tailrec fun <T> eagerReduce(list: List<T>, combine: (T, T) -> T): T? {
+        if (list.isEmpty()) return null
+        if (list.size == 1) return list.first()
+        val shorterList = mutableListOf<T>()
+        for (i in list.indices step 2) {
+            if (i == list.size - 1)
+                shorterList.add(list[i])
+            else
+                shorterList.add(combine(list[i], list[i + 1]))
+        }
+
+        return eagerReduce(shorterList, combine)
+    }
+
 }

@@ -1,6 +1,7 @@
 import Monoid.balancedReduce
 import Monoid.combineMergeMultimap
 import Monoid.combineMergeNestedMaps
+import Monoid.eagerReduce
 import Monoid.mean
 import Monoid.productCombine
 import org.assertj.core.api.Assertions.assertThat
@@ -65,6 +66,15 @@ class MonoidTest {
         val list = listOf("abc", "def", "ghi", "jkl", "mno")
 
         val result = balancedReduce(list, String::plus)
+
+        assertThat(result).isEqualTo("abcdefghijklmno")
+    }
+
+    @Test
+    fun testEagerReduce() {
+        val list = listOf("abc", "def", "ghi", "jkl", "mno")
+
+        val result = eagerReduce(list, String::plus)
 
         assertThat(result).isEqualTo("abcdefghijklmno")
     }
