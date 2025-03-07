@@ -1,3 +1,4 @@
+import Monoid.balancedReduce
 import Monoid.combineMergeMultimap
 import Monoid.combineMergeNestedMaps
 import Monoid.mean
@@ -57,5 +58,14 @@ class MonoidTest {
         val result = mean(list)
 
         assertThat(result).isEqualTo(3.0)
+    }
+
+    @Test
+    fun testBalancedReduce() {
+        val list = listOf("abc", "def", "ghi", "jkl", "mno")
+
+        val result = balancedReduce(list, String::plus)
+
+        assertThat(result).isEqualTo("abcdefghijklmno")
     }
 }

@@ -19,6 +19,8 @@ import arrow.core.fold
  * [Monoid - Wikipedia](https://en.wikipedia.org/wiki/Monoid)
  *
  * [Commutative property - Wikipedia](https://en.wikipedia.org/wiki/Commutative_property)
+ *
+ * [Fold - Wikipedia](https://en.wikipedia.org/wiki/Fold_(higher-order_function))
  */
 object Monoid {
     /**
@@ -73,4 +75,30 @@ object Monoid {
 
         return sumAndCount.first.toDouble() / sumAndCount.second
     }
+
+    /**
+     * ## Balanced reduce
+     *
+     * Due to the divide and conquer algorithm, balanced reduce is not suited to handling initial value
+     * and accumulation into a different structure like a traditional left/right fold.
+     *
+     * Instead of passing the identity element (nil) to handle the base case of empty list,
+     * the function returns `null` allowing the caller to fall back to nil or some initial value.
+     */
+    fun <T> balancedReduce(list: List<T>, combine: (T, T) -> T): T? {
+        if (list.isEmpty()) return null
+        if (list.size == 1) return list.first()
+
+        // Split the list in the middle
+        val middle = list.size / 2
+        val leftHalve = list.subList(0, middle)
+        val rightHalve = list.subList(middle, list.size)
+
+        val leftResult = balancedReduce(leftHalve, combine)
+        val rightResult = balancedReduce(rightHalve, combine)
+
+        return if (leftResult != null && rightResult != null) combine(leftResult, rightResult) else leftResult
+            ?: rightResult
+    }
+
 }
