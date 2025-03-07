@@ -14,6 +14,10 @@ import arrow.core.fold
  *
  * _Product_ monoids are useful for fusing traversals.
  *
+ * When the combine cost is proportional on the size of its arguments, e.g. strings, lists, the left and right folds
+ * are inefficient and _balanced reduce_ or _eager reduce_ algorithms should be preferred. However, the traditional
+ * left and right fold offer the flexibility to accumulate with an initial value and into a different structure.
+ *
  * ## References
  *
  * [Monoid - Wikipedia](https://en.wikipedia.org/wiki/Monoid)
