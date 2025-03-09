@@ -1,3 +1,4 @@
+import Monoid.Action
 import Monoid.balancedReduce
 import Monoid.combineMergeMultimap
 import Monoid.combineMergeNestedMaps
@@ -7,6 +8,7 @@ import Monoid.productCombine
 import Monoid.runningAverage
 import Monoid.runningDelta
 import Monoid.runningTotal
+import Monoid.runningTransformState
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.runTest
@@ -110,5 +112,18 @@ class MonoidTest {
         val result = runningDelta(flow).toList()
 
         assertThat(result).isEqualTo(listOf(0, 1, -1, 2))
+    }
+
+    @Test
+    fun testRunningTransformState() = runTest {
+        val actionFlow = flowOf(
+            Action.Add(1),
+            Action.Add(20),
+            Action.Subtract(5)
+        )
+
+        val result = runningTransformState(actionFlow).toList()
+
+        assertThat(result).isEqualTo(listOf(0, 1, 21, 16))
     }
 }

@@ -174,10 +174,27 @@ object Monoid {
         }
             .map { (previous, current) ->
                 if (previous != null && current != null) {
-                    // This is the combine operation
+                    // This is the monoid operation
                     current - previous
                 } else null
             }
             .filterNotNull()
 
+    /**
+     * ## Transforming state using running fold (scan)
+     *
+     * Computes successive state transitions for each action, starting from an initial state.
+     */
+    fun runningTransformState(actions: Flow<Action>) = actions.runningFold(0, ::transformState)
+
+    sealed class Action {
+        data class Add(val value: Int) : Action()
+        data class Subtract(val value: Int) : Action()
+    }
+
+    private fun transformState(state: Int, action: Action) = when (action) {
+        // These are the monoid operations, applied after the action is mapped (lifted) into the monoid type
+        is Action.Add -> state + action.value
+        is Action.Subtract -> state - action.value
+    }
 }
