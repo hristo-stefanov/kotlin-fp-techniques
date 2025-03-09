@@ -4,6 +4,12 @@ import Monoid.combineMergeNestedMaps
 import Monoid.eagerReduce
 import Monoid.mean
 import Monoid.productCombine
+import Monoid.runningAverage
+import Monoid.runningDelta
+import Monoid.runningTotal
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.test.runTest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -77,5 +83,32 @@ class MonoidTest {
         val result = eagerReduce(list, String::plus)
 
         assertThat(result).isEqualTo("abcdefghijklmno")
+    }
+
+    @Test
+    fun testRunningTotal() {
+        val list = listOf(1, 2, 3, 4, 5)
+
+        val result = runningTotal(list)
+
+        assertThat(result).isEqualTo(listOf(1, 3, 6, 10, 15))
+    }
+
+    @Test
+    fun testRunningAverage() {
+        val list = listOf(0.0, 1.0, 2.0, 2.0, 2.0)
+
+        val result = runningAverage(list)
+
+        assertThat(result).isEqualTo(listOf(0.0, 0.5, 1.25, 1.625, 1.8125))
+    }
+
+    @Test
+    fun testRunningDelta() = runTest {
+        val flow = flowOf(1, 1, 2, 1, 3)
+
+        val result = runningDelta(flow).toList()
+
+        assertThat(result).isEqualTo(listOf(0, 1, -1, 2))
     }
 }
