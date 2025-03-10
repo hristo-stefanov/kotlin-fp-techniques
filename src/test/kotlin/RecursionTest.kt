@@ -13,6 +13,6 @@ class RecursionTest {
     fun testFibonacci() {
         val result = Recursion.fibonacci.invoke(70)
 
-        assertThat(result).isEqualTo(5)
+        assertThat(result).isEqualTo(190_392_490_709_135)
     }
 }
