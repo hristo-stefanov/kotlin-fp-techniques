@@ -64,12 +64,16 @@ object Parallelism {
      * Allows limiting the number of coroutines created at once. This is useful when the number of elements
      * in the list is large. and you want to avoid creating too many coroutines at once.
      */
-    suspend fun <T, R> parallelListMap(list: List<T>, maxCoroutineNumber: Int, transform: (T) -> R): List<R> =
+    suspend fun <T, R> parallelListMap(list: List<T>, maxCoroutineNumber: Int, transform: suspend (T) -> R): List<R> =
         list.chunked(maxCoroutineNumber).flatMap { chunk ->
             parallelListMap(chunk, transform)
         }
 
-    suspend fun <T> parallelListFilter(list: List<T>, maxCoroutineNumber: Int, predicate: (T) -> Boolean): List<T> =
+    suspend fun <T> parallelListFilter(
+        list: List<T>,
+        maxCoroutineNumber: Int,
+        predicate: suspend (T) -> Boolean
+    ): List<T> =
         parallelListMap(list, maxCoroutineNumber) { if (predicate(it)) it else null }.filterNotNull()
 
     /**
