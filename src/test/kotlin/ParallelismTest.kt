@@ -30,7 +30,7 @@ class ParallelismTest {
         val list = listOf(1, 2, 3)
 
         val result = withContext(Dispatchers.Default) {
-            parallelListMap(list = list, maxCoroutineNumber = 1000) { it * 2 }
+            parallelListMap(list = list, maxCoroutines = 1000) { it * 2 }
         }
 
         assertThat(result).isEqualTo(listOf(2, 4, 6))
@@ -41,7 +41,7 @@ class ParallelismTest {
         val list = listOf(1, 2, 3)
 
         val result = withContext(Dispatchers.Default) {
-            parallelListFilter(list = list, maxCoroutineNumber = 1000) { it % 2 != 0 }
+            parallelListFilter(list = list, maxCoroutines = 1000) { it % 2 != 0 }
         }
 
         assertThat(result).isEqualTo(listOf(1, 3))
@@ -51,7 +51,7 @@ class ParallelismTest {
     fun testParallelFlowMergeMap() = runTest {
         val flow: Flow<Int> = flowOf(1, 2, 3, 4)
 
-        val resultFlow = parallelFlowMergeMap(flow, maxCoroutineNumber = 1000) { it * 2 }
+        val resultFlow = parallelFlowMergeMap(flow, maxCoroutines = 1000) { it * 2 }
 
         val result = withContext(Dispatchers.Default) { resultFlow.toList() }
 
@@ -63,7 +63,7 @@ class ParallelismTest {
     fun testParallelFlowMergeFilter() = runTest {
         val flow = flowOf(1, 2, 3)
 
-        val resultFlow = parallelFlowMergeFilter(flow = flow, maxCoroutineNumber = 1000) { it % 2 != 0 }
+        val resultFlow = parallelFlowMergeFilter(flow = flow, maxCoroutines = 1000) { it % 2 != 0 }
 
         val result = withContext(Dispatchers.Default) { resultFlow.toList() }
 

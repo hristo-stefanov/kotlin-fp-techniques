@@ -64,17 +64,17 @@ object Parallelism {
      * Allows limiting the number of coroutines created at once. This is useful when the number of elements
      * in the list is large. and you want to avoid creating too many coroutines at once.
      */
-    suspend fun <T, R> parallelListMap(list: List<T>, maxCoroutineNumber: Int, transform: suspend (T) -> R): List<R> =
-        list.chunked(maxCoroutineNumber).flatMap { chunk ->
+    suspend fun <T, R> parallelListMap(list: List<T>, maxCoroutines: Int, transform: suspend (T) -> R): List<R> =
+        list.chunked(maxCoroutines).flatMap { chunk ->
             parallelListMap(chunk, transform)
         }
 
     suspend fun <T> parallelListFilter(
         list: List<T>,
-        maxCoroutineNumber: Int,
+        maxCoroutines: Int,
         predicate: suspend (T) -> Boolean
     ): List<T> =
-        parallelListMap(list, maxCoroutineNumber) { if (predicate(it)) it else null }.filterNotNull()
+        parallelListMap(list, maxCoroutines) { if (predicate(it)) it else null }.filterNotNull()
 
     /**
      * ## Parallel merge map with Flow and constrained number of coroutines
@@ -90,9 +90,9 @@ object Parallelism {
      * before launching the coroutines. The approach here is using parallel collection for which
      * collecting on multithreaded dispatcher, such as Dispatchers.Default, is essential.
      */
-    fun <T, R> parallelFlowMergeMap(flow: Flow<T>, maxCoroutineNumber: Int, transform: suspend (T) -> R): Flow<R> =
+    fun <T, R> parallelFlowMergeMap(flow: Flow<T>, maxCoroutines: Int, transform: suspend (T) -> R): Flow<R> =
         @OptIn(ExperimentalCoroutinesApi::class)
-        flow.flatMapMerge(maxCoroutineNumber) { value ->
+        flow.flatMapMerge(maxCoroutines) { value ->
             flow { emit(transform(value)) }
         }
 
@@ -103,9 +103,9 @@ object Parallelism {
      *
      * @see [parallelFlowMergeMap]
      */
-    fun <T> parallelFlowMergeFilter(flow: Flow<T>, maxCoroutineNumber: Int, predicate: (T) -> Boolean) =
+    fun <T> parallelFlowMergeFilter(flow: Flow<T>, maxCoroutines: Int, predicate: (T) -> Boolean) =
         @OptIn(ExperimentalCoroutinesApi::class)
-        flow.flatMapMerge(maxCoroutineNumber) { value ->
+        flow.flatMapMerge(maxCoroutines) { value ->
             flow { if (predicate(value)) emit(value) }
         }
 }
