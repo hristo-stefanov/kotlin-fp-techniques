@@ -59,4 +59,16 @@ class ParallelismTest {
         // We sort the result because it's shuffled
         assertThat(result.sorted()).isEqualTo(listOf(2, 4, 6, 8))
     }
+
+    @Test
+    fun testParallelFlowMergeFilter() = runTest {
+        val flow = flowOf(1, 2, 3)
+
+        val resultFlow = Parallelism.parallelFlowMergeFilter(flow = flow, maxCoroutineNumber = 1000) { it % 2 != 0 }
+
+        val result = withContext(Dispatchers.Default) { resultFlow.toList() }
+
+        // We sort the result because it's shuffled
+        assertThat(result.sorted()).isEqualTo(listOf(1, 3))
+    }
 }

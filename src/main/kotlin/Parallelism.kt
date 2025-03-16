@@ -95,4 +95,17 @@ object Parallelism {
         flow.flatMapMerge(maxCoroutineNumber) { value ->
             flow { emit(transform(value)) }
         }
+
+    /**
+     * ## Parallel merge filter with Flow and constrained number of coroutines
+     *
+     * The order of filtered emissions does not match the order of source emissions.
+     *
+     * @see [parallelFlowMergeMap]
+     */
+    fun <T> parallelFlowMergeFilter(flow: Flow<T>, maxCoroutineNumber: Int, predicate: (T) -> Boolean) =
+        @OptIn(ExperimentalCoroutinesApi::class)
+        flow.flatMapMerge(maxCoroutineNumber) { value ->
+            flow { if (predicate(value)) emit(value) }
+        }
 }
