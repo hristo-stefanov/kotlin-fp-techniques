@@ -96,6 +96,9 @@ object Composing {
     private fun multiplySafely(x: Int, y: Int): Option<Int> = Option.catch { multiplyExact(x, y) }
 }
 
+/**
+ * Demonstrates tracing function composition in console
+ */
 fun main() {
     Composing.sinThenExpTraced(PI / 2)
 }
