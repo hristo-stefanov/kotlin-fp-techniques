@@ -10,3 +10,5 @@ single happy-path scenarios. They are **not intended for verification of correct
 
 For the best experience, view this repository in IntelliJ IDEA with "Render documentation comments" enabled in the
 settings to properly format KDoc comments.
+
+![Screenshot](images/Screenshot%20from%202025-03-16%2014-39-34.png)
