@@ -10,6 +10,11 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.withIndex
 
 /**
+ * # Parallelism
+ *
+ * Chaining parallel Flow operations, for instance filter and map, presents an opportunity to
+ * execute both operations in parallel.
+ *
  * ## References
  *
  * [Prefix sum - Wikipedia](https://en.wikipedia.org/wiki/Prefix_sum#Parallel_algorithms)
@@ -22,7 +27,7 @@ object Parallelism {
     /**
      * ## Parallel balanced reduce
      *
-     * The same algorithm as [Monoid.balancedReduce]
+     * The same algorithm as in [Monoid.balancedReduce]
      */
     suspend fun <T> parallelBalancedReduce(list: List<T>, combine: suspend (T, T) -> T): T? = coroutineScope {
         if (list.isEmpty()) return@coroutineScope null
