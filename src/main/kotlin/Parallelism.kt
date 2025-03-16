@@ -24,7 +24,7 @@ object Parallelism {
      *
      * The same algorithm as [Monoid.balancedReduce]
      */
-    suspend fun <T> parallelBalancedReduce(list: List<T>, combine: (T, T) -> T): T? = coroutineScope {
+    suspend fun <T> parallelBalancedReduce(list: List<T>, combine: suspend (T, T) -> T): T? = coroutineScope {
         if (list.isEmpty()) return@coroutineScope null
         if (list.size == 1) return@coroutineScope list.first()
 
