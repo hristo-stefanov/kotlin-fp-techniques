@@ -36,6 +36,17 @@ class ParallelismTest {
     }
 
     @Test
+    fun testParallelListFilter() = runTest {
+        val list = listOf(1, 2, 3)
+
+        val result = withContext(Dispatchers.Default) {
+            Parallelism.parallelListFilter(list = list, maxCoroutineNumber = 1000) { it % 2 != 0 }
+        }
+
+        assertThat(result).isEqualTo(listOf(1, 3))
+    }
+
+    @Test
     fun testParallelFlowMergeMap() = runTest {
         val flow: Flow<Int> = flowOf(1, 2, 3, 4)
 

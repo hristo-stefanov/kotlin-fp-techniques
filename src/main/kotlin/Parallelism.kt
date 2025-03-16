@@ -69,6 +69,9 @@ object Parallelism {
             parallelListMap(chunk, transform)
         }
 
+    suspend fun <T> parallelListFilter(list: List<T>, maxCoroutineNumber: Int, predicate: (T) -> Boolean): List<T> =
+        parallelListMap(list, maxCoroutineNumber) { if (predicate(it)) it else null }.filterNotNull()
+
     /**
      * ## Parallel merge map with Flow and constrained number of coroutines
      *
