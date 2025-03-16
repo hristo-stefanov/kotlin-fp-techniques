@@ -60,7 +60,7 @@ object Parallelism {
     suspend fun <T, R> parallelListMap(list: List<T>, transform: suspend (T) -> R): List<R> = coroutineScope {
         list.map {
             async { transform(it) }
-        }.awaitAll() // Similar to map { it.await() } to fails eagerly
+        }.awaitAll() // Similar to map { it.await() } but fails eagerly
     }
 
     /**
