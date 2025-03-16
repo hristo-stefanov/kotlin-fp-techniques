@@ -15,6 +15,8 @@ import kotlinx.coroutines.flow.withIndex
  * [Prefix sum - Wikipedia](https://en.wikipedia.org/wiki/Prefix_sum#Parallel_algorithms)
  *
  * [Parallel algorithm - Wikipedia](https://en.wikipedia.org/wiki/Parallel_algorithm)
+ *
+ * [Parallelism - The Java Tutorials](https://docs.oracle.com/javase/tutorial/collections/streams/parallelism.html)
  */
 object Parallelism {
     /**
