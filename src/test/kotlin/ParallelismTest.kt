@@ -1,5 +1,8 @@
+
 import Parallelism.parallelBalancedReduce
+import Parallelism.parallelFlowMergeFilter
 import Parallelism.parallelFlowMergeMap
+import Parallelism.parallelListFilter
 import Parallelism.parallelListMap
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -27,9 +30,7 @@ class ParallelismTest {
         val list = listOf(1, 2, 3)
 
         val result = withContext(Dispatchers.Default) {
-            parallelListMap(list = list, maxCoroutineNumber = 1000) { value ->
-                value * 2
-            }
+            parallelListMap(list = list, maxCoroutineNumber = 1000) { it * 2 }
         }
 
         assertThat(result).isEqualTo(listOf(2, 4, 6))
@@ -40,7 +41,7 @@ class ParallelismTest {
         val list = listOf(1, 2, 3)
 
         val result = withContext(Dispatchers.Default) {
-            Parallelism.parallelListFilter(list = list, maxCoroutineNumber = 1000) { it % 2 != 0 }
+            parallelListFilter(list = list, maxCoroutineNumber = 1000) { it % 2 != 0 }
         }
 
         assertThat(result).isEqualTo(listOf(1, 3))
@@ -50,11 +51,9 @@ class ParallelismTest {
     fun testParallelFlowMergeMap() = runTest {
         val flow: Flow<Int> = flowOf(1, 2, 3, 4)
 
-        val resultFlow = parallelFlowMergeMap(flow, 1000) { it * 2 }
+        val resultFlow = parallelFlowMergeMap(flow, maxCoroutineNumber = 1000) { it * 2 }
 
-        val result = withContext(Dispatchers.Default) {
-            resultFlow.toList()
-        }
+        val result = withContext(Dispatchers.Default) { resultFlow.toList() }
 
         // We sort the result because it's shuffled
         assertThat(result.sorted()).isEqualTo(listOf(2, 4, 6, 8))
@@ -64,7 +63,7 @@ class ParallelismTest {
     fun testParallelFlowMergeFilter() = runTest {
         val flow = flowOf(1, 2, 3)
 
-        val resultFlow = Parallelism.parallelFlowMergeFilter(flow = flow, maxCoroutineNumber = 1000) { it % 2 != 0 }
+        val resultFlow = parallelFlowMergeFilter(flow = flow, maxCoroutineNumber = 1000) { it % 2 != 0 }
 
         val result = withContext(Dispatchers.Default) { resultFlow.toList() }
 
