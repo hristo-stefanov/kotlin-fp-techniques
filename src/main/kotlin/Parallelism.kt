@@ -1,9 +1,13 @@
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.withIndex
 
 /**
  * ## References
@@ -49,11 +53,11 @@ object Parallelism {
     suspend fun <T, R> parallelListMap(list: List<T>, transform: suspend (T) -> R): List<R> = coroutineScope {
         list.map {
             async { transform(it) }
-        }.map { it.await() }
+        }.awaitAll() // Similar to map { it.await() } to fails eagerly
     }
 
     /**
-     * ## Parallel map with List and limiting the number of coroutines
+     * ## Parallel map with List with constrained number of coroutines
      *
      * Allows limiting the number of coroutines created at once. This is useful when the number of elements
      * in the list is large. and you want to avoid creating too many coroutines at once.
@@ -64,15 +68,20 @@ object Parallelism {
         }
 
     /**
-     * ## Parallel shuffle map with Flow and limiting the number of coroutines
+     * ## Parallel merge map with Flow and constrained number of coroutines
      *
-     * The order of the mapped emissions does not match the order of the source emissions.
+     * The order of mapped emissions does not match the order of source emissions.
      *
-     * Notice that the approach used for List cannot be used here, because coroutineScope will be exited
-     * before the coroutines are launched. So the approach here is to use parallel collection for which
+     * Preserving the order of reactive stream emissions while processing in parallel is tricky.
+     * For example, [flatMapConcat] does not support concurrency at all. [channelFlow] can potentially be
+     * used for implementation that preserves the order. A good options is using [withIndex] to
+     * source emissions with their indices and sort the collected emissions accordingly.
+     *
+     * Unlike the approach used for Lists, this function cannot rely on [coroutineScope], since it exits
+     * before launching the coroutines. The approach here is using parallel collection for which
      * collecting on multithreaded dispatcher, such as Dispatchers.Default, is essential.
      */
-    fun <T, R> parallelFlowShuffleMap(flow: Flow<T>, maxCoroutineNumber: Int, transform: suspend (T) -> R): Flow<R> =
+    fun <T, R> parallelFlowMergeMap(flow: Flow<T>, maxCoroutineNumber: Int, transform: suspend (T) -> R): Flow<R> =
         @OptIn(ExperimentalCoroutinesApi::class)
         flow.flatMapMerge(maxCoroutineNumber) { value ->
             flow { emit(transform(value)) }

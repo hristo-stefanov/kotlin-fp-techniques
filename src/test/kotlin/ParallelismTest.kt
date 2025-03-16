@@ -1,4 +1,5 @@
 import Parallelism.parallelBalancedReduce
+import Parallelism.parallelFlowMergeMap
 import Parallelism.parallelListMap
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -35,10 +36,10 @@ class ParallelismTest {
     }
 
     @Test
-    fun testParallelFlowShuffleMap() = runTest {
+    fun testParallelFlowMergeMap() = runTest {
         val flow: Flow<Int> = flowOf(1, 2, 3, 4)
 
-        val resultFlow = Parallelism.parallelFlowShuffleMap(flow, 1000) { it * 2 }
+        val resultFlow = parallelFlowMergeMap(flow, 1000) { it * 2 }
 
         val result = withContext(Dispatchers.Default) {
             resultFlow.toList()
